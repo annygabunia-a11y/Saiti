@@ -1,0 +1,60 @@
+{
+  "project_id": "gen-lang-client-0739068504",
+  "collections": [
+    {
+      "name": "users",
+      "description": "User profiles",
+      "fields": [
+        { "name": "uid", "type": "string", "description": "User ID matching Auth UID" },
+        { "name": "email", "type": "string", "description": "User's email" },
+        { "name": "displayName", "type": "string", "description": "User's display name" },
+        { "name": "balance", "type": "number", "description": "User's account balance in GEL" },
+        { "name": "role", "type": "string", "description": "Role: user, admin, or seller" },
+        { "name": "createdAt", "type": "timestamp", "description": "Creation timestamp" }
+      ],
+      "rules": [
+        { "action": "read", "condition": "request.auth != null" },
+        { "action": "create", "condition": "request.auth != null && request.auth.uid == request.resource.data.uid" },
+        { "action": "update", "condition": "request.auth != null && request.auth.uid == resource.data.uid" },
+        { "action": "delete", "condition": "false" }
+      ]
+    },
+    {
+      "name": "products",
+      "description": "Products available for sale",
+      "fields": [
+        { "name": "title", "type": "string", "description": "Product title" },
+        { "name": "price", "type": "number", "description": "Product price" },
+        { "name": "type", "type": "string", "description": "Type of product (e.g. Account, Diamonds)" },
+        { "name": "sellerId", "type": "string", "description": "ID of the seller user" },
+        { "name": "sellerName", "type": "string", "description": "Display name of the seller" },
+        { "name": "color", "type": "string", "description": "Theme color" },
+        { "name": "rating", "type": "number", "description": "Average rating" },
+        { "name": "reviewsCount", "type": "number", "description": "Total reviews count" },
+        { "name": "createdAt", "type": "timestamp", "description": "Timestamp of creation" }
+      ],
+      "rules": [
+        { "action": "read", "condition": "true" },
+        { "action": "create", "condition": "request.auth != null && request.auth.uid == request.resource.data.sellerId" },
+        { "action": "update", "condition": "request.auth != null && request.auth.uid == resource.data.sellerId" },
+        { "action": "delete", "condition": "request.auth != null && request.auth.uid == resource.data.sellerId" }
+      ]
+    },
+    {
+      "name": "transactions",
+      "description": "User transactions (topups, purchases)",
+      "fields": [
+        { "name": "userId", "type": "string", "description": "ID of the user making the transaction" },
+        { "name": "amount", "type": "number", "description": "Transaction amount" },
+        { "name": "type", "type": "string", "description": "topup or purchase" },
+        { "name": "createdAt", "type": "timestamp", "description": "Creation timestamp" }
+      ],
+      "rules": [
+        { "action": "read", "condition": "request.auth != null && request.auth.uid == resource.data.userId" },
+        { "action": "create", "condition": "request.auth != null && request.auth.uid == request.resource.data.userId" },
+        { "action": "update", "condition": "false" },
+        { "action": "delete", "condition": "false" }
+      ]
+    }
+  ]
+}
